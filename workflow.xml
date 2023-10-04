@@ -1,0 +1,229 @@
+<tool id='NA' name='NA'>
+  <command interpreter='bash'>main.sh</command>
+  <cancel interpreter='bash'>cancel.sh</cancel>
+  <inputs>
+      <section name='dcs' type='section' title='Monte Carlo Simulation Options' expanded='true'>
+        <param 
+            name='model_file' 
+            type='select' 
+            label='3DCS Model File (.WTX)' 
+            help='3DCS exported model wtx model file.' 
+            multiple='false'
+        >
+            <option value="AAO_HeadLamp_Assembly.wtx"  selected="true">AAO_HeadLamp_Assembly.wtx</option>
+        </param>
+        <param 
+            name='num_seeds' 
+            type='integer' 
+            label='Number of Monte Carlo Simulations' 
+            min='1' 
+            max='10000' 
+            value='2000'>
+        </param>
+        <param 
+            name='concurrency' 
+            type='integer' 
+            label='Case Concurrency' 
+            min='1' 
+            max='100' 
+            value='10' 
+            help='Number of workers used to run the simulations.' 
+        ></param>
+        <param 
+            name='thread' 
+            type='integer' 
+            label='Thread Number [0-4]' 
+            min='0' 
+            max='4' 
+            value='0' 
+            help='Number of threads used to run the simulation.'
+        ></param>
+    </section>
+    <section name='pwrl_001_simulation_executor' type='section' title='Simulation Executor' expanded='true'>
+        <param 
+            name='install_dir' 
+            label='3DCS Installation Directory' 
+            type='text' 
+            help='Specify the PATH as seen from Windows Subsystem for Linux' 
+            value='/c/Program Files/DCS/3DCS_MC_8_0_0_0'
+        ></param>
+        <param 
+            name='resource' 
+            type='computeResource' 
+            label='Service host' 
+            hideUserWorkspace='true' 
+            help='Resource to host the service'>
+        </param>
+        <param 
+            name='jobschedulertype' 
+            label='Select Controller, SLURM Partition or PBS Queue' 
+            type='hidden' 
+            value='SLURM' 
+        >
+        </param>
+        <conditional name="jobschedulertype_cond">
+            <param 
+                name='jobschedulertype' 
+                type='select' 
+                label='Select SLURM Partition or PBS Queue' 
+                help='Job will submitted using sbatch or qsub, respectively' 
+                multiple='false'
+            >
+                <option value="SLURM"  selected="true">SLURM Partition</option>
+                <option value="PBS">PBS Queue</option>
+            </param>
+            <when value="SLURM">
+                <param 
+                    name='_sch__dd_partition_e_' 
+                    label='Slurm Partition' 
+                    type='text' 
+                    help='Name of the SLURM partition to run the OpenFOAM cases' 
+                    value=''
+                ></param>
+                <param 
+                    name='_sch__dd_ntasks_d_per_d_node_e_' 
+                    label='Tasks per Node' 
+                    type='integer' 
+                    min="1" 
+                    max="64" 
+                    help='--ntasks-per-node=value slurm directive' 
+                    value='2'
+                ></param>
+                <param 
+                    name='_sch__dd_nodes_e_' 
+                    label='Number of Nodes' 
+                    type='integer' 
+                    min="1" 
+                    max="2" 
+                    help='--nodes=value slurm directive' 
+                    value='1'
+                ></param>
+                <param 
+                    name='_sch__dd_time_e_' 
+                    label='Walltime' 
+                    type='text' 
+                    help='Maximum walltime per OpenFOAM case' 
+                    value='02:00:00'
+                ></param>
+                <param 
+                    name='scheduler_directives' 
+                    label='Scheduler directives' 
+                    type='text' 
+                    help='e.g. --mem=1000;--gpus-per-node=1 - Use the semicolon character ; to separate parameters. Do not include the SBATCH keyword.' 
+                    value='' 
+                ></param>
+            </when>
+            <when value="PBS">
+                <param 
+                    name='_sch__d_q___' 
+                    label='PBS queue' 
+                    type='text' 
+                    help='Queue to submit the interactive job. Must select one! Use [qstat -f -Q] to list all queues on the system' 
+                    value=''
+                ></param>
+                <param 
+                    name='scheduler_directives' 
+                    label='Scheduler directives' 
+                    type='text' 
+                    help='e.g. -l mem=1000;-l nodes=1:ppn=4 - Use the semicolon character ; to separate parameters. Do not include the PBS keyword.' 
+                    value='-l walltime=02:30:00;-l nodes=1:ppn=4'
+                ></param>
+            </when>
+            </conditional>
+            <param name='workdir' label='Shared Work Directory' type='text' help='This directory must be shared between the compute and login nodes. This parameter overwrites the working directory in the resource definition page' value='__WORKDIR__'></param>
+        </section>
+    <section name='pwrl_002_merge_executor' type='section' title='Merge Executor' expanded='true'>
+        <param 
+            name='install_dir' 
+            label='3DCS Installation Directory' 
+            type='text' 
+            help='Specify the PATH as seen from Windows Subsystem for Linux' 
+            value='/c/Program Files/DCS/3DCS_MC_8_0_0_0'
+        ></param>
+        <param 
+            name='resource' 
+            type='computeResource' 
+            label='Service host' 
+            hideUserWorkspace='true' 
+            help='Resource to host the service'>
+        </param>
+        <param 
+            name='jobschedulertype' 
+            label='Select Controller, SLURM Partition or PBS Queue' 
+            type='hidden' 
+            value='SLURM' 
+        >
+        </param>
+        <conditional name="jobschedulertype_cond">
+            <param 
+                name='jobschedulertype' 
+                type='select' 
+                label='Select SLURM Partition or PBS Queue' 
+                help='Job will submitted using sbatch or qsub, respectively' 
+                multiple='false'
+            >
+                <option value="SLURM"  selected="true">SLURM Partition</option>
+                <option value="PBS">PBS Queue</option>
+            </param>
+            <when value="SLURM">
+                <param 
+                    name='_sch__dd_partition_e_' 
+                    label='Slurm Partition' 
+                    type='text' 
+                    help='Name of the SLURM partition to run the OpenFOAM cases' 
+                    value=''
+                ></param>
+                <param 
+                    name='_sch__dd_ntasks_d_per_d_node_e_' 
+                    label='Tasks per Node' 
+                    type='integer' 
+                    min="1" 
+                    max="64" 
+                    help='--ntasks-per-node=value slurm directive' 
+                    value='2'
+                ></param>
+                <param 
+                    name='_sch__dd_nodes_e_' 
+                    label='Number of Nodes' 
+                    type='integer' 
+                    min="1" 
+                    max="2" 
+                    help='--nodes=value slurm directive' 
+                    value='1'
+                ></param>
+                <param 
+                    name='_sch__dd_time_e_' 
+                    label='Walltime' 
+                    type='text' 
+                    help='Maximum walltime per OpenFOAM case' 
+                    value='02:00:00'
+                ></param>
+                <param 
+                    name='scheduler_directives' 
+                    label='Scheduler directives' 
+                    type='text' 
+                    help='e.g. --mem=1000;--gpus-per-node=1 - Use the semicolon character ; to separate parameters. Do not include the SBATCH keyword.' 
+                    value='' 
+                ></param>
+            </when>
+            <when value="PBS">
+                <param 
+                    name='_sch__d_q___' 
+                    label='PBS queue' 
+                    type='text' 
+                    help='Queue to submit the interactive job. Must select one! Use [qstat -f -Q] to list all queues on the system' 
+                    value=''
+                ></param>
+                <param 
+                    name='scheduler_directives' 
+                    label='Scheduler directives' 
+                    type='text' 
+                    help='e.g. -l mem=1000;-l nodes=1:ppn=4 - Use the semicolon character ; to separate parameters. Do not include the PBS keyword.' 
+                    value='-l walltime=02:30:00;-l nodes=1:ppn=4'
+                ></param>
+            </when>
+            </conditional>
+            <param name='workdir' label='Shared Work Directory' type='text' help='This directory must be shared between the compute and login nodes. This parameter overwrites the working directory in the resource definition page' value='__WORKDIR__'></param>
+        </section>
+    </inputs>
+</tool>
