@@ -32,11 +32,42 @@ cluster_rsync_exec() {
         destination=${resource_publicIp}:${resource_jobdir}/${resource_label}/
         echo "rsync -avzq --rsync-path="mkdir -p ${resource_jobdir} && rsync " ${origin} ${destination}"
         rsync -avzq --rsync-path="mkdir -p ${resource_jobdir} && rsync " ${origin} ${destination}
+
+        # Prepare cancel script
+        if [[ ${jobschedulertype} == "SLURM" ]]; then
+            # FIXME: Add job_name to input_form_resource_wrapper
+            job_name=$(cat ${resource_dir}/batch_header.sh | grep -e '--job-name' | cut -d'=' -f2)
+            echo "scancel \$(squeue -h -o \"%i\" -n \"$job_name\")" >> cancel_job.sh
+
         
         # Execute the script
         echo "ssh -o StrictHostKeyChecking=no ${resource_publicIp} ${resource_jobdir}/${resource_label}/cluster_rsync_exec.sh"
         ssh -o StrictHostKeyChecking=no ${resource_publicIp} ${resource_jobdir}/${resource_label}/cluster_rsync_exec.sh
     done
+}
+
+cluster_rsync_cancel() {
+    # Cancels the jobs submitted by the cluster_rsync_exec function using the job's name
+    for path_to_rsync_exec_sh in $(find resources -name cluster_rsync_exec.sh); do
+        resource_dir=$(dirname ${path_to_rsync_exec_sh})
+        resource_label=$(basename ${resource_dir})
+
+        source ${resource_dir}/inputs.sh
+
+        echo; echo "Canceling jobs in ${resource_name} - ${resource_publicIp}"
+
+        # Prepare cancel script
+        if [[ ${jobschedulertype} == "SLURM" ]]; then
+            # FIXME: Add job_name to input_form_resource_wrapper
+            job_name=$(cat ${resource_dir}/batch_header.sh | grep -e '--job-name' | cut -d'=' -f2)
+            echo "scancel \$(squeue -h -o \"%i\" -n \"$job_name\")" >> ${resource_dir}/cancel_job.sh
+        fi
+
+        echo "ssh -o StrictHostKeyChecking=no ${resource_publicIp} 'bash -s' < ${resource_dir}/cancel_job.sh"
+        ssh -o StrictHostKeyChecking=no ${resource_publicIp} 'bash -s' < ${resource_dir}/cancel_job.sh
+
+    done
+
 }
 
 
