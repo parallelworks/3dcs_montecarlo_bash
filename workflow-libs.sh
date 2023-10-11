@@ -57,7 +57,8 @@ cluster_rsync_cancel() {
         if [[ ${jobschedulertype} == "SLURM" ]]; then
             # FIXME: Add job_name to input_form_resource_wrapper
             job_name=$(cat ${resource_dir}/batch_header.sh | grep -e '--job-name' | cut -d'=' -f2)
-            job_ids=$(ssh -o StrictHostKeyChecking=no ${resource_publicIp} squeue -h -o "%i" -n ${job_name})
+            # Needs to go between " " to prevent new lines
+            job_ids="$(ssh -o StrictHostKeyChecking=no ${resource_publicIp} squeue -h -o "%i" -n ${job_name})"
             if [ -z "${job_ids}" ]; then
                 echo "No jobs found in ${resource_name} - ${resource_publicIp}"
                 continue
