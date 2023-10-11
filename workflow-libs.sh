@@ -39,13 +39,13 @@ cluster_rsync_exec() {
     done
 }
 
-cluster_rsync_cancel() {
+cancel_jobs_by_name() {
     # Cancels the jobs submitted by the cluster_rsync_exec function using the job's name
-    for path_to_rsync_exec_sh in $(find resources -name cluster_rsync_exec.sh); do
-        resource_dir=$(dirname ${path_to_rsync_exec_sh})
+    for resource_inputs_sh in $(find resources -name inputs.sh); do
+        resource_dir=$(dirname ${resource_inputs_sh})
         resource_label=$(basename ${resource_dir})
 
-        source ${resource_dir}/inputs.sh
+        source ${resource_inputs_sh}
         
         if [ "${jobschedulertype}" != "PBS" ] && [ "${jobschedulertype}" != "SLURM" ]; then
             continue
