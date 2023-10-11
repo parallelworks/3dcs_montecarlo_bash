@@ -33,13 +33,6 @@ cluster_rsync_exec() {
         echo "rsync -avzq --rsync-path="mkdir -p ${resource_jobdir} && rsync " ${origin} ${destination}"
         rsync -avzq --rsync-path="mkdir -p ${resource_jobdir} && rsync " ${origin} ${destination}
 
-        # Prepare cancel script
-        if [[ ${jobschedulertype} == "SLURM" ]]; then
-            # FIXME: Add job_name to input_form_resource_wrapper
-            job_name=$(cat ${resource_dir}/batch_header.sh | grep -e '--job-name' | cut -d'=' -f2)
-            echo "scancel \$(squeue -h -o \"%i\" -n \"$job_name\")" >> cancel_job.sh
-
-        
         # Execute the script
         echo "ssh -o StrictHostKeyChecking=no ${resource_publicIp} ${resource_jobdir}/${resource_label}/cluster_rsync_exec.sh"
         ssh -o StrictHostKeyChecking=no ${resource_publicIp} ${resource_jobdir}/${resource_label}/cluster_rsync_exec.sh
