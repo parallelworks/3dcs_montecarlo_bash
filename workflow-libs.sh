@@ -65,6 +65,8 @@ cluster_rsync_cancel() {
         fi
 
         echo "${cancel_cmd} ${job_ids}" | tr '\n' ' ' >> ${resource_dir}/cancel_job.sh
+        echo "${resource_dir}/cancel_job.sh:"
+        cat ${resource_dir}/cancel_job.sh
         
         # Run cancel script
         echo "ssh -o StrictHostKeyChecking=no ${resource_publicIp} 'bash -s' < ${resource_dir}/cancel_job.sh"
