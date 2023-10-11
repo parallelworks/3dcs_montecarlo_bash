@@ -57,15 +57,14 @@ cluster_rsync_cancel() {
         if [[ ${jobschedulertype} == "SLURM" ]]; then
             # FIXME: Add job_name to input_form_resource_wrapper
             job_name=$(cat ${resource_dir}/batch_header.sh | grep -e '--job-name' | cut -d'=' -f2)
-            # Needs to go between " " to prevent new lines
-            job_ids="$(ssh -o StrictHostKeyChecking=no ${resource_publicIp} squeue -h -o "%i" -n ${job_name})"
+            job_ids=$(ssh -o StrictHostKeyChecking=no ${resource_publicIp} squeue -h -o "%i" -n ${job_name})
             if [ -z "${job_ids}" ]; then
                 echo "No jobs found in ${resource_name} - ${resource_publicIp}"
                 continue
             fi
         fi
 
-        echo "${cancel_cmd} ${job_ids}" >> ${resource_dir}/cancel_job.sh
+        echo "${cancel_cmd} ${job_ids}" | tr '\n' ' ' >> ${resource_dir}/cancel_job.sh
         
         # Run cancel script
         echo "ssh -o StrictHostKeyChecking=no ${resource_publicIp} 'bash -s' < ${resource_dir}/cancel_job.sh"
