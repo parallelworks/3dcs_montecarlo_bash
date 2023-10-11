@@ -34,6 +34,7 @@ cluster_rsync_exec() {
         rsync -avzq --rsync-path="mkdir -p ${resource_jobdir} && rsync " ${origin} ${destination}
 
         # Execute the script
+        touch ${resource_dir}/cluster_rsync_exec.submitted
         echo "ssh -o StrictHostKeyChecking=no ${resource_publicIp} ${resource_jobdir}/${resource_label}/cluster_rsync_exec.sh"
         ssh -o StrictHostKeyChecking=no ${resource_publicIp} ${resource_jobdir}/${resource_label}/cluster_rsync_exec.sh
     done
@@ -44,6 +45,11 @@ cluster_rsync_cancel() {
     for path_to_rsync_exec_sh in $(find resources -name cluster_rsync_exec.sh); do
         resource_dir=$(dirname ${path_to_rsync_exec_sh})
         resource_label=$(basename ${resource_dir})
+
+        # Only run if job was submitted
+        if ! [ -f "${resource_dir}/cluster_rsync_exec.submitted" ]; then
+            continue
+        fi
 
         source ${resource_dir}/inputs.sh
 
@@ -56,6 +62,7 @@ cluster_rsync_cancel() {
             echo "scancel \$(squeue -h -o \"%i\" -n \"$job_name\")" >> ${resource_dir}/cancel_job.sh
         fi
 
+        touch ${resource_dir}/cluster_rsync_exec.canceled
         echo "ssh -o StrictHostKeyChecking=no ${resource_publicIp} 'bash -s' < ${resource_dir}/cancel_job.sh"
         ssh -o StrictHostKeyChecking=no ${resource_publicIp} 'bash -s' < ${resource_dir}/cancel_job.sh
 
