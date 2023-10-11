@@ -34,7 +34,6 @@ cluster_rsync_exec() {
         rsync -avzq --rsync-path="mkdir -p ${resource_jobdir} && rsync " ${origin} ${destination}
 
         # Execute the script
-        touch ${resource_dir}/cluster_rsync_exec.submitted
         echo "ssh -o StrictHostKeyChecking=no ${resource_publicIp} ${resource_jobdir}/${resource_label}/cluster_rsync_exec.sh"
         ssh -o StrictHostKeyChecking=no ${resource_publicIp} ${resource_jobdir}/${resource_label}/cluster_rsync_exec.sh
     done
@@ -46,12 +45,11 @@ cluster_rsync_cancel() {
         resource_dir=$(dirname ${path_to_rsync_exec_sh})
         resource_label=$(basename ${resource_dir})
 
-        # Only run if job was submitted
-        if ! [ -f "${resource_dir}/cluster_rsync_exec.submitted" ]; then
+        source ${resource_dir}/inputs.sh
+        
+        if [ "${jobschedulertype}" != "PBS" ] && [ "${jobschedulertype}" != "SLURM" ]; then
             continue
         fi
-
-        source ${resource_dir}/inputs.sh
 
         echo; echo "Canceling jobs in ${resource_name} - ${resource_publicIp}"
 
@@ -59,10 +57,16 @@ cluster_rsync_cancel() {
         if [[ ${jobschedulertype} == "SLURM" ]]; then
             # FIXME: Add job_name to input_form_resource_wrapper
             job_name=$(cat ${resource_dir}/batch_header.sh | grep -e '--job-name' | cut -d'=' -f2)
-            echo "scancel \$(squeue -h -o \"%i\" -n \"$job_name\")" >> ${resource_dir}/cancel_job.sh
+            job_ids=$(ssh -o StrictHostKeyChecking=no ${resource_publicIp} squeue -h -o "%i" -n ${job_name})
+            if [ -z "${job_ids}" ]; then
+                echo "No jobs found in ${resource_name} - ${resource_publicIp}"
+                continue
+            fi
         fi
 
-        touch ${resource_dir}/cluster_rsync_exec.canceled
+        echo "${cancel_cmd} ${job_ids}" >> ${resource_dir}/cancel_job.sh
+        
+        # Run cancel script
         echo "ssh -o StrictHostKeyChecking=no ${resource_publicIp} 'bash -s' < ${resource_dir}/cancel_job.sh"
         ssh -o StrictHostKeyChecking=no ${resource_publicIp} 'bash -s' < ${resource_dir}/cancel_job.sh
 
