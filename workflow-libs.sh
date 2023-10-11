@@ -62,6 +62,14 @@ cluster_rsync_cancel() {
                 echo "No jobs found in ${resource_name} - ${resource_publicIp}"
                 continue
             fi
+        elif [[ ${jobschedulertype} == "PBS" ]]; then
+            # FIXME: Add job_name to input_form_resource_wrapper
+            job_name=$(cat ${resource_dir}/batch_header.sh | grep -e '#PBS -N' | cut -d'=' -f2)
+            job_ids=$(ssh -o StrictHostKeyChecking=no ${resource_publicIp} qselect -N ${job_name})
+            if [ -z "${job_ids}" ]; then
+                echo "No jobs found in ${resource_name} - ${resource_publicIp}"
+                continue
+            fi
         fi
 
         echo "${cancel_cmd} ${job_ids}" | tr '\n' ' ' >> ${resource_dir}/cancel_job.sh
