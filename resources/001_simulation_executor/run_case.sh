@@ -28,9 +28,7 @@ if ! [ -z "${dcs_load}" ]; then
 fi
 
 # Run 3dcs
-"${dcs_run}"  macroScript.txt
-
-"${install_dir}/dcsSimuMacro.exe"  macroScript.txt
+eval "${dcs_run}"  macroScript.txt
 
 echo "TRANSFERRING RESULTS TO PW"
 origin="Results/"
