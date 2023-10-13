@@ -11,6 +11,7 @@
             multiple='false'
         >
             <option value="AAO_HeadLamp_Assembly.wtx"  selected="true">AAO_HeadLamp_Assembly.wtx</option>
+            <option value="TC2-1216981compliant_model.wtx"  selected="true">TC2-1216981compliant_model.wtx</option>
         </param>
         <param 
             name='num_seeds' 
@@ -57,9 +58,9 @@
         <param 
             name='resource' 
             type='computeResource' 
-            label='Service host' 
+            label='Resource' 
             hideUserWorkspace='true' 
-            help='Resource to host the service'>
+            help='Resource to run the simulation task'>
         </param>
         <param 
             name='jobschedulertype' 
@@ -157,9 +158,9 @@
         <param 
             name='resource' 
             type='computeResource' 
-            label='Service host' 
+            label='Resource' 
             hideUserWorkspace='true' 
-            help='Resource to host the service'>
+            help='Resource to run the merge task'>
         </param>
         <param 
             name='jobschedulertype' 
