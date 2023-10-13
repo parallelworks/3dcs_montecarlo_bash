@@ -61,7 +61,7 @@ for case_index in $(seq 1 ${dcs_concurrency}); do
         echo "  ERROR: ${submit_cmd} ${submit_job_sh} failed"
     else
         echo "  Submitted job ${job_id}"
-        echo ${job_id} > ${PWD}/${case_dir}/job_id.submitted
+        echo ${job_id} > ${PWD}/${case_dir}/${job_id}.submitted
     fi
 done
 
