@@ -50,7 +50,13 @@ echo "DCSREPORT_GEN 1 ./reports" >> macroScript.txt
 
 cat macroScript.txt 
 
-"${install_dir}/dcsSimuMacro.exe"  macroScript.txt
+# Load 3dcs environment
+if ! [ -z "${dcs_load}" ]; then
+    "${dcs_load}"
+fi
+
+# Run 3dcs
+"${dcs_run}"  macroScript.txt
 
 echo "TRANSFERRING RESULTS TO PW"
 origin="Results/"

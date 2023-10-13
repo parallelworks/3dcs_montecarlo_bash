@@ -41,11 +41,18 @@
     </section>
     <section name='pwrl_001_simulation_executor' type='section' title='Simulation Executor' expanded='true'>
         <param 
-            name='install_dir' 
-            label='3DCS Installation Directory' 
+            name='dcs_load' 
+            label='Command to load DCS' 
             type='text' 
-            help='Specify the PATH as seen from Windows Subsystem for Linux' 
-            value='/c/Program Files/DCS/3DCS_MC_8_0_0_0'
+            help='To load the environment, enter the appropriate command, for example: module load module-name or source path/to/env.sh.' 
+            value=''
+        ></param>
+        <param 
+            name='dcs_run' 
+            label='Command to run DCS' 
+            type='text' 
+            help='Specify the PATH as seen from Windows Subsystem for Linux or Wine' 
+            value='/c/Program Files/DCS/3DCS_MC_8_0_0_0/dcsSimuMacro.exe'
         ></param>
         <param 
             name='resource' 
@@ -134,11 +141,18 @@
         </section>
     <section name='pwrl_002_merge_executor' type='section' title='Merge Executor' expanded='true'>
         <param 
-            name='install_dir' 
-            label='3DCS Installation Directory' 
+            name='dcs_load' 
+            label='Command to load DCS' 
             type='text' 
-            help='Specify the PATH as seen from Windows Subsystem for Linux' 
-            value='/c/Program Files/DCS/3DCS_MC_8_0_0_0'
+            help='To load the environment, enter the appropriate command, for example: module load module-name or source path/to/env.sh.' 
+            value=''
+        ></param>
+        <param 
+            name='dcs_run' 
+            label='Command to run DCS' 
+            type='text' 
+            help='Specify the PATH as seen from Windows Subsystem for Linux or Wine' 
+            value='/c/Program Files/DCS/3DCS_MC_8_0_0_0/dcsSimuMacro.exe'
         ></param>
         <param 
             name='resource' 
