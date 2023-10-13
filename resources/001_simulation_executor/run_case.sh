@@ -21,7 +21,14 @@ END
 
 # run in bat file to get correct exit code from the software
 #echo set DCS2FLMD_LICENSE_FILE="$DCS2FLMD_LICENSE_FILE" > run.bat
-"${install_dir}/dcsSimuMacro.exe"  macroScript.txt
+
+# Load 3dcs environment
+if ! [ -z "${dcs_load}" ]; then
+    "${dcs_load}"
+fi
+
+# Run 3dcs
+eval "${dcs_run}"  macroScript.txt
 
 echo "TRANSFERRING RESULTS TO PW"
 origin="Results/"

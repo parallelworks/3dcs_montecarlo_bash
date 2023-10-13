@@ -11,6 +11,7 @@
             multiple='false'
         >
             <option value="AAO_HeadLamp_Assembly.wtx"  selected="true">AAO_HeadLamp_Assembly.wtx</option>
+            <option value="TC2-1216981compliant_model.wtx"  selected="true">TC2-1216981compliant_model.wtx</option>
         </param>
         <param 
             name='num_seeds' 
@@ -41,18 +42,25 @@
     </section>
     <section name='pwrl_001_simulation_executor' type='section' title='Simulation Executor' expanded='true'>
         <param 
-            name='install_dir' 
-            label='3DCS Installation Directory' 
+            name='dcs_load' 
+            label='Command to load DCS' 
             type='text' 
-            help='Specify the PATH as seen from Windows Subsystem for Linux' 
-            value='/c/Program Files/DCS/3DCS_MC_8_0_0_0'
+            help='To load the environment, enter the appropriate command, for example: module load module-name or source path/to/env.sh.' 
+            value=''
+        ></param>
+        <param 
+            name='dcs_run' 
+            label='Command to run DCS' 
+            type='text' 
+            help='Specify the PATH as seen from Windows Subsystem for Linux or Wine' 
+            value='/c/Program Files/DCS/3DCS_MC_8_0_0_0/dcsSimuMacro.exe'
         ></param>
         <param 
             name='resource' 
             type='computeResource' 
-            label='Service host' 
+            label='Resource' 
             hideUserWorkspace='true' 
-            help='Resource to host the service'>
+            help='Resource to run the simulation task'>
         </param>
         <param 
             name='jobschedulertype' 
@@ -134,18 +142,25 @@
         </section>
     <section name='pwrl_002_merge_executor' type='section' title='Merge Executor' expanded='true'>
         <param 
-            name='install_dir' 
-            label='3DCS Installation Directory' 
+            name='dcs_load' 
+            label='Command to load DCS' 
             type='text' 
-            help='Specify the PATH as seen from Windows Subsystem for Linux' 
-            value='/c/Program Files/DCS/3DCS_MC_8_0_0_0'
+            help='To load the environment, enter the appropriate command, for example: module load module-name or source path/to/env.sh.' 
+            value=''
+        ></param>
+        <param 
+            name='dcs_run' 
+            label='Command to run DCS' 
+            type='text' 
+            help='Specify the PATH as seen from Windows Subsystem for Linux or Wine' 
+            value='/c/Program Files/DCS/3DCS_MC_8_0_0_0/dcsSimuMacro.exe'
         ></param>
         <param 
             name='resource' 
             type='computeResource' 
-            label='Service host' 
+            label='Resource' 
             hideUserWorkspace='true' 
-            help='Resource to host the service'>
+            help='Resource to run the merge task'>
         </param>
         <param 
             name='jobschedulertype' 
