@@ -86,12 +86,12 @@ while true; do
         get_job_status
         job_status_ec=$?
         echo "  Status of job ${jobid} is ${job_status} with exit code ${job_status_ec}"
-        if [ ${job_status_ec} -eq 1 ]; then
+        if [[ "${job_status_ec}" == "1" ]]; then
             # Job completed
             mv ${sj} ${sj}.completed
             case_dir=$(dirname ${sj} | sed "s|${PWD}/||g")
             #scp ${resource_publicIp}:${resource_jobdir}/${case_dir}/pw-${job_id}.out ${case_dir}
-        elif [ ${job_status_ec} -eq 2 ]; then
+        elif [[ "${job_status_ec}" == "2" ]]; then
             # Job failed
             FAILED=true
             FAILED_JOBS="${job_id}, ${FAILED_JOBS}"
