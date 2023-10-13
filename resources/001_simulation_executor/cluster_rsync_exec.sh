@@ -85,7 +85,7 @@ while true; do
         jobid=$(cat ${sj})
         get_job_status
         job_status_ec=$?
-        echo "  Status of job ${jobid} is ${job_status}"
+        echo "  Status of job ${jobid} is ${job_status} with exit code ${job_status_ec}"
         if [[ ${job_status_ec} -eq 1 ]]; then
             # Job completed
             mv ${sj} ${sj}.completed
