@@ -70,7 +70,7 @@ done
 echo; echo "CHECKING JOBS STATUS"
 while true; do
     date
-    submitted_jobs=$(find . -name job_id.submitted)
+    submitted_jobs=$(find . -name *.submitted)
 
     if [ -z "${submitted_jobs}" ]; then
         if [[ "${FAILED}" == "true" ]]; then
