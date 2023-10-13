@@ -61,7 +61,7 @@ for case_index in $(seq 1 ${dcs_concurrency}); do
         echo "  ERROR: ${submit_cmd} ${submit_job_sh} failed"
     else
         echo "  Submitted job ${job_id}"
-        echo ${job_id} > ${PWD}/${case_dir}/${job_id}.submitted
+        echo ${job_id} > ${PWD}/${case_dir}/job_id.submitted
     fi
 done
 
@@ -70,7 +70,7 @@ done
 echo; echo "CHECKING JOBS STATUS"
 while true; do
     date
-    submitted_jobs=$(find . -name *.submitted)
+    submitted_jobs=$(find . -name job_id.submitted)
 
     if [ -z "${submitted_jobs}" ]; then
         if [[ "${FAILED}" == "true" ]]; then
@@ -85,14 +85,15 @@ while true; do
         jobid=$(cat ${sj})
         get_job_status
         job_status_ec=$?
-        echo "  Status of job ${jobid} is ${job_status} with exit code ${job_status_ec}"
-        if [[ "${job_status_ec}" == "1" ]]; then
-            # Job completed
+        echo "  Status of job ${jobid} is ${job_status}"
+        if [ ${job_status_ec} -eq 1 ]; then
+            echo "Job ${jobid} was completed"
             mv ${sj} ${sj}.completed
             case_dir=$(dirname ${sj} | sed "s|${PWD}/||g")
             #scp ${resource_publicIp}:${resource_jobdir}/${case_dir}/pw-${job_id}.out ${case_dir}
-        elif [[ "${job_status_ec}" == "2" ]]; then
+        elif [ ${job_status_ec} -eq 2 ]; then
             # Job failed
+            echo "Job ${jobid} was failed"
             FAILED=true
             FAILED_JOBS="${job_id}, ${FAILED_JOBS}"
         fi
