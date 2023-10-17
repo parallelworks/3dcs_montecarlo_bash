@@ -12,7 +12,7 @@ echo "TRANSFERRING MODEL FILE FROM PW"
 origin="usercontainer:${PW_JOB_DIR}/models/${dcs_model_file}"
 rsync -avzq -e "ssh -J ${resource_privateIp}" ${origin} ${dcs_model_file}
 
-sleep 60
+sleep 5
 
 #export DCS2FLMD_LICENSE_FILE="27000@172.31.44.156"
 
